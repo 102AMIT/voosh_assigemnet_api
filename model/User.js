@@ -14,10 +14,13 @@ const UserSchema=new mongoose.Schema({
         type:String,
         required:true,
     },
-    order:{
-        type:String,
-        default:""
-    }
+    order:[
+        {
+            type : String,
+        }
+    ]
+        
+    
 
 },{timestamps:true}
 );

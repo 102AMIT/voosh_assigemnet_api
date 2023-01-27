@@ -1,13 +1,12 @@
 const express =require('express');
-const app = express();
 const port = 8000;
 const db = require('./config/mongoose');
+const app = express();
+
+app.use(express.json());
 
 
-
-app.get('/', (req, res) => res.send('Hello World!'));
-
-
+app.use('/api',require('./routes'));
 
 
 app.listen(port,function(error){
