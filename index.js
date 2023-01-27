@@ -3,6 +3,8 @@ const port = 8000;
 const db = require('./config/mongoose');
 const app = express();
 
+// Returns middleware that only parses json and only looks at requests where the 
+// Content-Type header matches the type option.
 app.use(express.json());
 
 

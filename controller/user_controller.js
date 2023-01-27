@@ -4,10 +4,22 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require("crypto");
 
+// this secrateKey is used for routes protection
 const secrateKey = "sdadhhsahd";
 
 
-// for adding/register user
+
+
+/* For Adding/Register User :
+Request TYPE : POST 
+POST : http://localhost:8000/api/add-user
+{
+    "name": "John Doe",
+    "number": "123456789",
+    "password": "123456"
+}
+*/
+
 module.exports.addUser = async function (req, res) {
 
     try {
@@ -38,7 +50,17 @@ module.exports.addUser = async function (req, res) {
 
 }
 
-// for loginUser
+/* For Login User :--
+Request TYPE : POST 
+POST : http://localhost:8000/api/login-user
+Header : {
+    key : secrateKey (for routes protection)
+    }
+{
+    "number": "123456789",
+    "password": "123456"
+}
+*/
 module.exports.loginUser = async function (req, res) {
     try {
 
@@ -81,7 +103,19 @@ module.exports.loginUser = async function (req, res) {
 
 }
 
-// for addOrder
+/* For add order :--
+Request TYPE : POST 
+POST : http://localhost:8000/api/add-order
+Header : {
+    authorization : "JWT token"
+    }
+{
+    "sub_total":255,
+    "number":123456789,
+    "item_name":"mobile"
+
+}
+*/
 module.exports.addOrder = async function (req, res) {
 
     try {
@@ -115,7 +149,13 @@ module.exports.addOrder = async function (req, res) {
 
 }
 
-// for getOrder
+/* For get order :--
+Request TYPE : POST 
+POST : http://localhost:8000/api/get-order
+Header : {
+    authorization : "JWT token"
+    }
+*/
 module.exports.getOrder = async function (req, res) {
     try {
 

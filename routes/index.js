@@ -4,15 +4,15 @@ const router = express.Router();
 const userController = require('../controller/user_controller');
 
 
-// User routes
 
-router.post('/add-user', userController.addUser);
 
-router.post('/login-user', userController.loginUser);
+router.post('/add-user', userController.addUser);// Route :- addUser
 
-router.post('/add-order', userController.addOrder);
+router.post('/login-user', userController.loginUser);// Route :- loginUser
 
-router.get('/get-order', userController.getOrder);
+router.post('/add-order', userController.addOrder);// Route :- addOrder
+
+router.get('/get-order', userController.getOrder);// Route :- getOrder
 
 
 // export the router for use
