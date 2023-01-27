@@ -14,10 +14,28 @@ const UserSchema=new mongoose.Schema({
         type:String,
         required:true,
     },
-    order:[
-        {
-            type : String,
+    order:[ 
+        {  
+            id :{
+                type :String,
+                required:true,
+                unique:true,
+            },
+            item_name:{
+                type :String,
+                required:true,
+            },
+            sub_total:{
+                type:Number,
+                required:true,
+            },
+            number :{
+                type:Number,
+                required:true,
+            }
+            
         }
+    
     ]
         
     
