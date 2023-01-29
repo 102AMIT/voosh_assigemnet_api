@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require("crypto");
 
 // this secrateKey is used for routes protection
-const secrateKey = "sdadhhsahd";
+const secrateKey = process.env.SECRET_KEY;
 
 
 
@@ -21,6 +21,7 @@ POST : http://localhost:8000/api/add-user
 */
 
 module.exports.addUser = async function (req, res) {
+    
 
     try {
         const number = await User.findOne({ number: req.body.number });
@@ -38,13 +39,12 @@ module.exports.addUser = async function (req, res) {
                 password: hashedPass,
             })
             await newUser.save();
-            // console.log(user);
             res.status(200).json({
                 message: 'User created',
             })
         }
     } catch (err) {
-        res.status(500).json(err);
+        res.status(500).json({message:err.message});
     }
 
 
@@ -63,23 +63,21 @@ Header : {
 */
 module.exports.loginUser = async function (req, res) {
     try {
-
         if (req.headers.key !== secrateKey) {
             return res.status(404).json({
                 message: "User unauthorized",
             })
         }
         const user = await User.findOne({ number: req.body.number });
-
         if (!user) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: 'User does not exist'
             });
         }
 
         const validated = await bcrypt.compare(req.body.password, user.password);
         if (!validated) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: "Wrong credentials"
             })
         }
@@ -88,13 +86,15 @@ module.exports.loginUser = async function (req, res) {
         const token = jwt.sign({
             name: user.name,
             number: user.number,
-        }, "SECRET", { expiresIn: "24h" });
+        }, "SECRET", { expiresIn: "30d" });
 
 
 
         return res.status(200).json({
             message: 'Login successful',
-            token
+            token,
+            id:user.id
+            
         });
 
     } catch (err) {
@@ -118,11 +118,18 @@ Header : {
 */
 module.exports.addOrder = async function (req, res) {
 
-    try {
+    try {   
+        let phoneNumber = await User.findOne({number:req.body.number});
+        if(!phoneNumber){
+            return res.status(400).json({
+                message: "Check your phone number",
+            })
+        }
         let token = req.headers.authorization;
         token = jwt.verify(token, "SECRET");
         if (token) {
-            let user = await User.findOne({ token });
+            
+            let user = await User.findOne({ number:token.number });
             if (!user) {
                 return res.status(404).json({
                     message: "User unauthorized",
@@ -134,8 +141,10 @@ module.exports.addOrder = async function (req, res) {
                 sub_total: req.body.sub_total,
                 number: req.body.number
             }
+            console.log(order)
             user.order.push(order);
             await user.save();
+            console.log(user);
 
             return res.status(200).json({
                 message: 'Order added',
@@ -158,16 +167,18 @@ Header : {
 */
 module.exports.getOrder = async function (req, res) {
     try {
-
         let token = req.headers.authorization;
         token = jwt.verify(token, "SECRET");
         if (token) {
-            let user = await User.findOne({ token });
+            
+            let user = await User.findById(req.query.id);
+            
             if (!user) {
                 return res.status(404).json({
                     message: "User unauthorized",
                 })
             }
+           
             return res.status(200).json({
                 message: 'Order fetched Successfully',
                 orders: user.order

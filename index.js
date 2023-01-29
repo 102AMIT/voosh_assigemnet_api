@@ -1,13 +1,15 @@
 const express =require('express');
 const port = 8000;
+require('dotenv').config();
 const db = require('./config/mongoose');
 const app = express();
 
-// Returns middleware that only parses json and only looks at requests where the 
-// Content-Type header matches the type option.
+const cors = require('cors')
+ 
 app.use(express.json());
+app.use(cors())
 
-
+// Routes accessible through
 app.use('/api',require('./routes'));
 
 
