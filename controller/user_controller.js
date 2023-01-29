@@ -5,8 +5,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require("crypto");
 
 // this secrateKey is used for routes protection
-const secrateKey = `${process.env.SECRATE_KEY}`;
-
+const secrateKey =process.env.SECRATE_KEY;
 
 
 /* For Adding/Register User :
@@ -25,25 +24,26 @@ module.exports.addUser = async function (req, res) {
     try {
         const number = await User.findOne({ number: req.body.number });
         if (number) {
-            res.status(200).json({
+            return res.status(400).json({
                 message: 'User already exists'
             })
         }
         else {
             const salt = await bcrypt.genSalt(10);
             const hashedPass = await bcrypt.hash(req.body.password, salt);
-            const newUser = new User({
+            await User.create({
                 name: req.body.name,
                 number: req.body.number,
                 password: hashedPass,
+                
             })
-            await newUser.save();
-            res.status(200).json({
+            
+            return res.status(200).json({
                 message: 'User created',
             })
         }
     } catch (err) {
-        res.status(500).json({message:err.message});
+        return res.status(500).json({message:err.message});
     }
 
 
@@ -62,7 +62,7 @@ Header : {
 */
 module.exports.loginUser = async function (req, res) {
     try {
-        console.log(secrateKey);
+        // console.log(secrateKey);
         if (req.headers.key !== secrateKey) {
             return res.status(404).json({
                 message: "User unauthorized",
@@ -141,10 +141,10 @@ module.exports.addOrder = async function (req, res) {
                 sub_total: req.body.sub_total,
                 number: req.body.number
             }
-            console.log(order)
+            // console.log(order)
             user.order.push(order);
             await user.save();
-            console.log(user);
+            // console.log(user);
 
             return res.status(200).json({
                 message: 'Order added',
