@@ -5,8 +5,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require("crypto");
 
 // this secrateKey is used for routes protection
-const secrateKey = process.env.SECRET_KEY;
-
+const secrateKey = `${process.env.SECRATE_KEY}`;
 
 
 
@@ -63,6 +62,7 @@ Header : {
 */
 module.exports.loginUser = async function (req, res) {
     try {
+        console.log(secrateKey);
         if (req.headers.key !== secrateKey) {
             return res.status(404).json({
                 message: "User unauthorized",
